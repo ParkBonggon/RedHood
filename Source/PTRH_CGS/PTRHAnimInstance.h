@@ -30,7 +30,7 @@ public:
 	float GroundSpeed;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
-	bool IsFalling;
+	float IsFalling;
 
 
 };

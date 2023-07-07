@@ -57,7 +57,6 @@ APRHCharacter::APRHCharacter()
 void APRHCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("Ä¿¹Ô¿¬½À"));
 
 	if(APlayerController * PlayerController = Cast<APlayerController>(Controller)) 
 	{

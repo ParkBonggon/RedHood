@@ -3,7 +3,3 @@
 
 #include "PTRH_CGSGameModeBase.h"
 #include "PRHCharacter.h"
-
-APTRH_CGSGameModeBase::APTRH_CGSGameModeBase()
-{
-}

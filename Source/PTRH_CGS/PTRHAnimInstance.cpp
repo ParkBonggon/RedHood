@@ -15,6 +15,7 @@ void UPTRHAnimInstance::NativeInitializeAnimation()
 	if (TRHCharacter)
 	{
 		TRHCharacterMovement = TRHCharacter->GetCharacterMovement();
+		
 	}
 
 }
@@ -23,9 +24,10 @@ void UPTRHAnimInstance::NativeUpdateAnimation(float DeltaTime)
 {
 	Super::NativeUpdateAnimation(DeltaTime);
 
+	TRHCharacter = Cast<APRHCharacter>(TryGetPawnOwner());
 	if (TRHCharacterMovement)
 	{
 		GroundSpeed = UKismetMathLibrary::VSizeXY(TRHCharacterMovement->Velocity);
-		IsFalling = TRHCharacterMovement->IsFalling();
+		IsFalling = TRHCharacter->GetVelocity().Z;
 	}
 }
