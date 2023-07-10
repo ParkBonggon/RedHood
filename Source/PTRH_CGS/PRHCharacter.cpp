@@ -76,12 +76,14 @@ void APRHCharacter::BeginPlay()
 
 	RHAnim->OnNextAttackCheck.AddLambda([this]() -> void
 		{
-			CanNextCombo = false;
-
 			if (IsComboInputOn)
 			{
 				AttackStartComboState();
 				RHAnim->JumpToAttackMontageSection(CurrentCombo);
+			}
+			else
+			{
+				CanNextCombo = false;
 			}
 		});
 }
@@ -150,27 +152,29 @@ void APRHCharacter::Equip()
 
 void APRHCharacter::Attack()
 {
-	if (IsAttacking)
+	if (!GetCharacterMovement()->IsFalling())
 	{
-		if (CanNextCombo)
+		if (IsAttacking)
 		{
-			IsComboInputOn = true;
+			if (CanNextCombo)
+			{
+				IsComboInputOn = true;
+			}
+		}
+		else
+		{
+			AttackStartComboState();
+			RHAnim->PlayAttackMontage();
+			RHAnim->JumpToAttackMontageSection(CurrentCombo);
+			IsAttacking = true;
 		}
 	}
-	else
-	{
-		AttackStartComboState();
-		RHAnim->PlayAttackMontage();
-		RHAnim->JumpToAttackMontageSection(CurrentCombo);
-		IsAttacking = true;
-	}
-	
 }
 
 void APRHCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	IsAttacking = false;
-	AttackEndComboState();
+		IsAttacking = false;
+		AttackEndComboState();
 }
 
 void APRHCharacter::AttackStartComboState()
