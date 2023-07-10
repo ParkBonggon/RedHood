@@ -51,31 +51,6 @@ protected:
 
 	void Attack();
 
-	//Attack System
-	UFUNCTION()
-	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
-
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	bool IsAttacking;
-
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	bool CanNextCombo;
-
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	bool IsComboInputOn;
-
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	int32 CurrentCombo;
-
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	int32 MaxCombo;
-
-	UPROPERTY()
-	class UPTRHAnimInstance* RHAnim;
-
-	void AttackStartComboState();
-	void AttackEndComboState();
-
 private:
 
 	UPROPERTY(VisibleAnywhere)
@@ -86,8 +61,5 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly)
 		class APItem* OverlappingItem;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Montage")
-		UAnimMontage* AttackMontage;
 
 };

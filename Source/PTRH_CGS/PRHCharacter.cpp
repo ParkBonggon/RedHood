@@ -52,8 +52,6 @@ APRHCharacter::APRHCharacter()
 		CharactorRotation->bUseControllerDesiredRotation = false;
 	}
 
-	MaxCombo = 4;
-	AttackEndComboState();
 }
 
 // Called when the game starts or when spawned
@@ -73,8 +71,6 @@ void APRHCharacter::BeginPlay()
 //Move
 void APRHCharacter::Move(const FInputActionValue& Value)
 {
-	if (!IsAttacking)
-	{
 		if (Controller != nullptr)
 		{
 			const FVector2D MovementVector = Value.Get<FVector2D>();
@@ -83,9 +79,6 @@ void APRHCharacter::Move(const FInputActionValue& Value)
 			AddMovementInput(FVector(0.f, MovementVector.Y, 0.f));
 
 		}
-	}
-
-
 }
 
 
@@ -115,30 +108,11 @@ void APRHCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 void APRHCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	RHAnim = Cast<UPTRHAnimInstance>(GetMesh()->GetAnimInstance());
-
-	RHAnim->OnMontageEnded.AddDynamic(this, &APRHCharacter::OnAttackMontageEnded);
-
-	RHAnim->OnNextAttackCheck.AddLambda([this]() -> void
-		{
-			CanNextCombo = false;
-
-			if (IsComboInputOn)
-			{
-				AttackStartComboState();
-				RHAnim->JumpToAttackMontageSection(CurrentCombo);
-			}
-		});
-	
 }
 
 void APRHCharacter::Jump()
 {
-	if (!IsAttacking)
-	{
 		Super::Jump();
-	}
-
 }
 
 void APRHCharacter::Equip()
@@ -152,39 +126,7 @@ void APRHCharacter::Equip()
 
 void APRHCharacter::Attack()
 {
-	if (IsAttacking)
-	{
-		if (CanNextCombo)
-		{
-			IsComboInputOn = true;
-		}
-	}
-	else
-	{
-		AttackStartComboState();
-		RHAnim->PlayAttackMontage();
-		RHAnim->JumpToAttackMontageSection(CurrentCombo);
-		IsAttacking = true;
-	}
+	
 }
 
-void APRHCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
-{
-	IsAttacking = false;
-	AttackEndComboState();
-}
-
-void APRHCharacter::AttackStartComboState()
-{
-	CanNextCombo = true;
-	IsComboInputOn = false;
-	CurrentCombo = FMath::Clamp<int32>(CurrentCombo + 1, 1, MaxCombo);
-}
-
-void APRHCharacter::AttackEndComboState()
-{
-	IsComboInputOn = false;
-	CanNextCombo = false;
-	CurrentCombo = 0;
-}
 
