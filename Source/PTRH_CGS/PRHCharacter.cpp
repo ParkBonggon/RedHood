@@ -12,6 +12,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "PItem.h"
 #include "PWeapon.h"
+#include "Animation/AnimMontage.h"
+#include "PTRHAnimInstance.h"
 
 
 
@@ -50,7 +52,8 @@ APRHCharacter::APRHCharacter()
 		CharactorRotation->bUseControllerDesiredRotation = false;
 	}
 
-
+	MaxCombo = 4;
+	AttackEndComboState();
 }
 
 // Called when the game starts or when spawned
@@ -65,20 +68,21 @@ void APRHCharacter::BeginPlay()
 			Subsystem->AddMappingContext(RedHoodContext, 0);
 		}
 	}
-	
 }
 
 //Move
 void APRHCharacter::Move(const FInputActionValue& Value)
 {
-
-	if (Controller != nullptr)
+	if (!IsAttacking)
 	{
-		const FVector2D MovementVector = Value.Get<FVector2D>();
+		if (Controller != nullptr)
+		{
+			const FVector2D MovementVector = Value.Get<FVector2D>();
 
-		AddMovementInput(FVector(MovementVector.X, 0.f, 0.f));
-		AddMovementInput(FVector(0.f, MovementVector.Y, 0.f));
+			AddMovementInput(FVector(MovementVector.X, 0.f, 0.f));
+			AddMovementInput(FVector(0.f, MovementVector.Y, 0.f));
 
+		}
 	}
 
 
@@ -103,13 +107,38 @@ void APRHCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &APRHCharacter::Move);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &APRHCharacter::Jump);
 		EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Triggered, this, &APRHCharacter::Equip);
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &APRHCharacter::Attack);
 	}
 
 }
 
+void APRHCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	RHAnim = Cast<UPTRHAnimInstance>(GetMesh()->GetAnimInstance());
+
+	RHAnim->OnMontageEnded.AddDynamic(this, &APRHCharacter::OnAttackMontageEnded);
+
+	RHAnim->OnNextAttackCheck.AddLambda([this]() -> void
+		{
+			CanNextCombo = false;
+
+			if (IsComboInputOn)
+			{
+				AttackStartComboState();
+				RHAnim->JumpToAttackMontageSection(CurrentCombo);
+			}
+		});
+	
+}
+
 void APRHCharacter::Jump()
 {
-	Super::Jump();
+	if (!IsAttacking)
+	{
+		Super::Jump();
+	}
+
 }
 
 void APRHCharacter::Equip()
@@ -119,5 +148,43 @@ void APRHCharacter::Equip()
 	{
 		OverlappingWeapon->Equip(GetMesh(), FName("RightHandWeapon"));
 	}
+}
+
+void APRHCharacter::Attack()
+{
+	if (IsAttacking)
+	{
+		if (CanNextCombo)
+		{
+			IsComboInputOn = true;
+		}
+	}
+	else
+	{
+		AttackStartComboState();
+		RHAnim->PlayAttackMontage();
+		RHAnim->JumpToAttackMontageSection(CurrentCombo);
+		IsAttacking = true;
+	}
+}
+
+void APRHCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	IsAttacking = false;
+	AttackEndComboState();
+}
+
+void APRHCharacter::AttackStartComboState()
+{
+	CanNextCombo = true;
+	IsComboInputOn = false;
+	CurrentCombo = FMath::Clamp<int32>(CurrentCombo + 1, 1, MaxCombo);
+}
+
+void APRHCharacter::AttackEndComboState()
+{
+	IsComboInputOn = false;
+	CanNextCombo = false;
+	CurrentCombo = 0;
 }
 
