@@ -128,11 +128,6 @@ void APRHCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 }
 
-void APRHCharacter::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-}
-
 void APRHCharacter::Jump()
 {
 	if (!IsAttacking)
@@ -147,8 +142,45 @@ void APRHCharacter::Equip()
 	if (OverlappingWeapon)
 	{
 		OverlappingWeapon->Equip(GetMesh(), FName("RightHandWeapon"));
+		OverlappingItem = nullptr;
+		EquippedWeapon = OverlappingWeapon;
+	}
+	else
+	{
+		if (CanDisarm())
+		{
+			PlayEquipMontage(FName("UnEquip"));
+			CharacterState = ECharacterState::ECS_Unequipped;
+		}
+		else if (CanArm())
+		{
+			PlayEquipMontage(FName("UnEquip"));
+			CharacterState = ECharacterState::ECS_EquippedSwordAndShild;
+		}
 	}
 }
+
+void APRHCharacter::PlayEquipMontage(FName SectionName)
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && EquipMontage)
+	{
+		AnimInstance->Montage_Play(EquipMontage);
+		AnimInstance->Montage_JumpToSection(SectionName, EquipMontage);
+	}
+}
+
+bool APRHCharacter::CanDisarm()
+{
+	return CharacterState != ECharacterState::ECS_Unequipped;
+}
+
+bool APRHCharacter::CanArm()
+{
+	return CharacterState == ECharacterState::ECS_Unequipped && EquippedWeapon;
+}
+
+
 
 void APRHCharacter::Attack()
 {
@@ -190,5 +222,4 @@ void APRHCharacter::AttackEndComboState()
 	CanNextCombo = false;
 	CurrentCombo = 0;
 }
-
 
