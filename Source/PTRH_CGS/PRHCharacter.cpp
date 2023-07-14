@@ -52,9 +52,6 @@ APRHCharacter::APRHCharacter()
 		CharactorRotation->bUseControllerDesiredRotation = false;
 	}
 
-	MaxCombo = 3;
-	AttackEndComboState();
-
 }
 
 // Called when the game starts or when spawned
@@ -69,30 +66,11 @@ void APRHCharacter::BeginPlay()
 			Subsystem->AddMappingContext(RedHoodContext, 0);
 		}
 	}
-
-	RHAnim = Cast<UPTRHAnimInstance>(GetMesh()->GetAnimInstance());
-
-	RHAnim->OnMontageEnded.AddDynamic(this, &APRHCharacter::OnAttackMontageEnded);
-
-	RHAnim->OnNextAttackCheck.AddLambda([this]() -> void
-		{
-			if (IsComboInputOn)
-			{
-				AttackStartComboState();
-				RHAnim->JumpToAttackMontageSection(CurrentCombo);
-			}
-			else
-			{
-				CanNextCombo = false;
-			}
-		});
 }
 
 //Move
 void APRHCharacter::Move(const FInputActionValue& Value)
 {
-	if (!IsAttacking)
-	{
 		if (Controller != nullptr)
 		{
 			const FVector2D MovementVector = Value.Get<FVector2D>();
@@ -100,8 +78,7 @@ void APRHCharacter::Move(const FInputActionValue& Value)
 			AddMovementInput(FVector(MovementVector.X, 0.f, 0.f));
 			AddMovementInput(FVector(0.f, MovementVector.Y, 0.f));
 
-		}
-	}
+		}	
 }
 
 
@@ -130,10 +107,7 @@ void APRHCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 void APRHCharacter::Jump()
 {
-	if (!IsAttacking)
-	{
 		Super::Jump();
-	}
 }
 
 void APRHCharacter::Equip()
@@ -145,81 +119,9 @@ void APRHCharacter::Equip()
 		OverlappingItem = nullptr;
 		EquippedWeapon = OverlappingWeapon;
 	}
-	else
-	{
-		if (CanDisarm())
-		{
-			PlayEquipMontage(FName("UnEquip"));
-			CharacterState = ECharacterState::ECS_Unequipped;
-		}
-		else if (CanArm())
-		{
-			PlayEquipMontage(FName("UnEquip"));
-			CharacterState = ECharacterState::ECS_EquippedSwordAndShild;
-		}
-	}
 }
-
-void APRHCharacter::PlayEquipMontage(FName SectionName)
-{
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	if (AnimInstance && EquipMontage)
-	{
-		AnimInstance->Montage_Play(EquipMontage);
-		AnimInstance->Montage_JumpToSection(SectionName, EquipMontage);
-	}
-}
-
-bool APRHCharacter::CanDisarm()
-{
-	return CharacterState != ECharacterState::ECS_Unequipped;
-}
-
-bool APRHCharacter::CanArm()
-{
-	return CharacterState == ECharacterState::ECS_Unequipped && EquippedWeapon;
-}
-
-
 
 void APRHCharacter::Attack()
 {
-	if (!GetCharacterMovement()->IsFalling())
-	{
-		if (IsAttacking)
-		{
-			if (CanNextCombo)
-			{
-				IsComboInputOn = true;
-			}
-		}
-		else
-		{
-			AttackStartComboState();
-			RHAnim->PlayAttackMontage();
-			RHAnim->JumpToAttackMontageSection(CurrentCombo);
-			IsAttacking = true;
-		}
-	}
-}
-
-void APRHCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
-{
-		IsAttacking = false;
-		AttackEndComboState();
-}
-
-void APRHCharacter::AttackStartComboState()
-{
-	CanNextCombo = true;
-	IsComboInputOn = false;
-	CurrentCombo = FMath::Clamp<int32>(CurrentCombo + 1, 1, MaxCombo);
-}
-
-void APRHCharacter::AttackEndComboState()
-{
-	IsComboInputOn = false;
-	CanNextCombo = false;
-	CurrentCombo = 0;
 }
 

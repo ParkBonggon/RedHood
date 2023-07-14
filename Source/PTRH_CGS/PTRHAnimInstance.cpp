@@ -23,7 +23,6 @@ void UPTRHAnimInstance::NativeInitializeAnimation()
 	if (TRHCharacter)
 	{
 		TRHCharacterMovement = TRHCharacter->GetCharacterMovement();
-		
 	}
 
 }
@@ -48,16 +47,6 @@ void UPTRHAnimInstance::PlayAttackMontage()
 void UPTRHAnimInstance::JumpToAttackMontageSection(int32 NewSection)
 {
 	Montage_JumpToSection(GetAttackMontageSectionName(NewSection), AttackMontage);
-}
-
-void UPTRHAnimInstance::AnimNotify_AttackHitCheck()
-{
-	OnAttackHitCheck.Broadcast();
-}
-
-void UPTRHAnimInstance::AnimNotify_NextAttackCheck()
-{
-	OnNextAttackCheck.Broadcast();
 }
 
 FName UPTRHAnimInstance::GetAttackMontageSectionName(int32 Section)

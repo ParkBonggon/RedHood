@@ -12,8 +12,6 @@ class PTRH_CGS_API APItem : public AActor
 {
 	GENERATED_BODY()
 
-	
-
 public:	
 	// Sets default values for this actor's properties
 	APItem();

@@ -1,5 +1,7 @@
 #include "PWeapon.h"
 #include "PRHCharacter.h"
+#include "Components/BoxComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 void APWeapon::Equip(USceneComponent* InParent, FName InSocketName)
 {
