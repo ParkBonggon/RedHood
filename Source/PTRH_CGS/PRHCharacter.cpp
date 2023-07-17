@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 
 #include "PRHCharacter.h"
 #include "Components/CapsuleComponent.h"
@@ -14,13 +12,13 @@
 #include "PWeapon.h"
 #include "Animation/AnimMontage.h"
 #include "PTRHAnimInstance.h"
+#include "Components/ArrowComponent.h"
 
 
 
-// Sets default values
+
 APRHCharacter::APRHCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	GetCapsuleComponent()->SetupAttachment(RootComponent);
@@ -40,6 +38,17 @@ APRHCharacter::APRHCharacter()
 	CameraBoom->bInheritYaw = false;
 	CameraBoom->bInheritRoll = false;
 
+	//Weapon
+
+	Sword = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Sword"));
+	Sword->SetupAttachment(GetMesh());
+
+	SwordTraceStart = CreateDefaultSubobject<UArrowComponent>(TEXT("Start"));
+	SwordTraceStart->SetupAttachment(Sword);
+
+	SwordTraceEnd = CreateDefaultSubobject<UArrowComponent>(TEXT("End"));
+	SwordTraceEnd->SetupAttachment(Sword);
+
 
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationPitch = false;
@@ -56,7 +65,6 @@ APRHCharacter::APRHCharacter()
 
 }
 
-// Called when the game starts or when spawned
 void APRHCharacter::BeginPlay()
 {
 	Super::BeginPlay();

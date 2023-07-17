@@ -24,7 +24,22 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	bool bCanAttack;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+		class USkeletalMeshComponent* Sword;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+		class USkeletalMeshComponent* Axe;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+		class USkeletalMeshComponent* Arrow;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+		UArrowComponent* SwordTraceStart;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+		UArrowComponent* SwordTraceEnd;
+
 protected:
 
 	virtual void BeginPlay() override;
