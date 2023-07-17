@@ -52,6 +52,8 @@ APRHCharacter::APRHCharacter()
 		CharactorRotation->bUseControllerDesiredRotation = false;
 	}
 
+	bCanAttack = true;
+
 }
 
 // Called when the game starts or when spawned
@@ -59,7 +61,7 @@ void APRHCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if(APlayerController * PlayerController = Cast<APlayerController>(Controller)) 
+	if(APlayerController * PlayerController = Cast<APlayerController>(Controller))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
@@ -71,14 +73,16 @@ void APRHCharacter::BeginPlay()
 //Move
 void APRHCharacter::Move(const FInputActionValue& Value)
 {
+	if (bCanAttack)
+	{
 		if (Controller != nullptr)
 		{
 			const FVector2D MovementVector = Value.Get<FVector2D>();
 
 			AddMovementInput(FVector(MovementVector.X, 0.f, 0.f));
 			AddMovementInput(FVector(0.f, MovementVector.Y, 0.f));
-
-		}	
+		}
+	}
 }
 
 
@@ -107,7 +111,11 @@ void APRHCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 void APRHCharacter::Jump()
 {
+	if (bCanAttack)
+	{
 		Super::Jump();
+	}
+		
 }
 
 void APRHCharacter::Equip()

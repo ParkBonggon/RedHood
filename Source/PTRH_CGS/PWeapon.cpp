@@ -3,6 +3,10 @@
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 
+APWeapon::APWeapon()
+{
+}
+
 void APWeapon::Equip(USceneComponent* InParent, FName InSocketName)
 {
 	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
@@ -21,3 +25,4 @@ void APWeapon::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 	Super::OnEndOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex);
 
 }
+

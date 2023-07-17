@@ -22,8 +22,8 @@ public:
 	
 	FORCEINLINE void SetOverlappingItem(class APItem* Item) { OverlappingItem = Item; }
 
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "State")
-	bool IsFalling;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	bool bCanAttack;
 	
 protected:
 
