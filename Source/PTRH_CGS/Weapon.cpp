@@ -17,14 +17,12 @@ AWeapon::AWeapon()
 	WeaponHitBox->SetupAttachment(GetRootComponent());
 
 	Weapon->SetCollisionProfileName(TEXT("NoCollision"));
-
 }
 
 // Called when the game starts or when spawned
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame

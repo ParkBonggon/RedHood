@@ -93,7 +93,6 @@ void APRHCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
-
 // Called every frame
 void APRHCharacter::Tick(float DeltaTime)
 {
@@ -140,4 +139,3 @@ void APRHCharacter::Equip()
 void APRHCharacter::Attack()
 {
 }
-
