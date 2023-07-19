@@ -60,11 +60,16 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 		class UInputAction* AttackAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+		class UInputAction* DodgeAction;
+
 	void Move(const FInputActionValue& Value);
 
 	void Equip();
 
 	void Attack();
+
+	void Dodge();
 
 private:
 

@@ -111,6 +111,7 @@ void APRHCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &APRHCharacter::Jump);
 		EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Triggered, this, &APRHCharacter::Equip);
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &APRHCharacter::Attack);
+		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &APRHCharacter::Dodge);
 	}
 
 }
@@ -136,5 +137,9 @@ void APRHCharacter::Equip()
 }
 
 void APRHCharacter::Attack()
+{
+}
+
+void APRHCharacter::Dodge()
 {
 }
