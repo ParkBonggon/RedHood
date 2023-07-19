@@ -66,9 +66,6 @@ protected:
 
 	void Attack();
 
-	UPROPERTY()
-	class UPTRHAnimInstance* RHAnim;
-
 private:
 
 	UPROPERTY(VisibleAnywhere)

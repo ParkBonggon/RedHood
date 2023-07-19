@@ -3,15 +3,11 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Animation/AnimInstance.h"
+#include "RHCharacterState.h"
 
 
 UPTRHAnimInstance::UPTRHAnimInstance()
 {
-	static ConstructorHelpers::FObjectFinder <UAnimMontage> ATTACK_MONTAGE
-	(TEXT("/Game/Asset/RedHood/HuntCharacter/Animation/Attack/AM_Attack.AM_Attack"));
-
-	if (ATTACK_MONTAGE.Succeeded())
-		AttackMontage = ATTACK_MONTAGE.Object;
 };
 
 void UPTRHAnimInstance::NativeInitializeAnimation()
